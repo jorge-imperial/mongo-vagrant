@@ -1,0 +1,68 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+
+  config.vm.define "m11" do |m11|
+    m11.vm.box = "centos/7"
+    m11.vm.hostname = "m11.mdb.com"
+
+    m11.vm.network "public_network", bridge: "eno1", ip: "192.168.1.21"
+
+    m11.vm.provider "virtualbox" do |vb|
+       vb.memory = "4096"
+    end
+
+    m11.vm.provision "shell", inline: <<-SHELL
+      sudo cp /vagrant/hosts /etc/hosts
+      sudo cp /vagrant/mongodb-enterprise.repo /etc/yum.repos.d/mongodb-enterprise.repo
+      sudo yum install -y mongodb-enterprise-3.4.16 mongodb-enterprise-server-3.4.16 mongodb-enterprise-shell-3.4.16 mongodb-enterprise-mongos-3.4.16 mongodb-enterprise-tools-3.4.16
+      sudo cp /vagrant/mongod.conf /etc/
+      sudo systemctl start mongod.service
+    SHELL
+
+  end
+
+  config.vm.define "m12" do |m12|
+    m12.vm.box = "centos/7"
+    m12.vm.hostname = "m12.mdb.com"
+
+    m12.vm.network "public_network", bridge: "eno1", ip: "192.168.1.22"
+
+    m12.vm.provider "virtualbox" do |vb|
+       vb.memory = "4096"
+    end
+    m12.vm.provision "shell", inline: <<-SHELL
+      sudo cp /vagrant/hosts /etc/hosts
+      sudo cp /vagrant/mongodb-enterprise.repo /etc/yum.repos.d/mongodb-enterprise.repo
+      sudo yum install -y mongodb-enterprise-3.4.16 mongodb-enterprise-server-3.4.16 mongodb-enterprise-shell-3.4.16 mongodb-enterprise-mongos-3.4.16 mongodb-enterprise-tools-3.4.16
+      sudo cp /vagrant/mongod.conf /etc/
+      sudo systemctl start mongod.service
+    SHELL
+  end
+
+  config.vm.define "m13" do |m13|
+    m13.vm.box = "centos/7"
+    m13.vm.hostname = "m13.mdb.com"
+
+    m13.vm.network "public_network", bridge: "eno1", ip: "192.168.1.23"
+
+    m13.vm.provider "virtualbox" do |vb|
+       vb.memory = "4096"
+    end
+    m13.vm.provision "shell", inline: <<-SHELL
+      sudo cp /vagrant/hosts /etc/hosts
+      sudo cp /vagrant/mongodb-enterprise.repo /etc/yum.repos.d/mongodb-enterprise.repo
+      sudo yum install -y mongodb-enterprise-3.4.16 mongodb-enterprise-server-3.4.16 mongodb-enterprise-shell-3.4.16 mongodb-enterprise-mongos-3.4.16 mongodb-enterprise-tools-3.4.16
+      sudo cp /vagrant/mongod.conf /etc/
+      sudo systemctl start mongod.service
+      mongo /vagrant/init_rs.js
+    SHELL
+  end
+end
+
+

@@ -1,0 +1,166 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+
+  config.vm.define "m11" do |m11|
+    m11.vm.box = "centos/7"
+    m11.vm.hostname = "m11.mdb.com"
+    m11.vm.network "public_network", bridge: "eno1", ip: "192.168.1.21"
+    m11.vm.provider "virtualbox" do |vb|
+       vb.memory = "4096"
+    end
+    m11.vm.provision "shell", inline: <<-SHELL
+      sudo cp /vagrant/hosts /etc/hosts
+      sudo cp /vagrant/mongodb-enterprise.repo /etc/yum.repos.d/mongodb-enterprise.repo
+      sudo yum install -y mongodb-enterprise
+      sudo cp /vagrant/mongod-shard0.conf /etc/mongod.conf
+      sudo systemctl start mongod.service
+    SHELL
+  end
+
+  config.vm.define "m12" do |m12|
+    m12.vm.box = "centos/7"
+    m12.vm.hostname = "m12.mdb.com"
+    m12.vm.network "public_network", bridge: "eno1", ip: "192.168.1.22"
+    m12.vm.provider "virtualbox" do |vb|
+       vb.memory = "4096"
+    end
+    m12.vm.provision "shell", inline: <<-SHELL
+      sudo cp /vagrant/hosts /etc/hosts
+      sudo cp /vagrant/mongodb-enterprise.repo /etc/yum.repos.d/mongodb-enterprise.repo
+      sudo yum install -y mongodb-enterprise
+      sudo cp /vagrant/mongod-shard0.conf /etc/mongod.conf
+      sudo systemctl start mongod.service
+    SHELL
+  end
+
+  config.vm.define "m13" do |m13|
+    m13.vm.box = "centos/7"
+    m13.vm.hostname = "m13.mdb.com"
+    m13.vm.network "public_network", bridge: "eno1", ip: "192.168.1.23"
+    m13.vm.provider "virtualbox" do |vb|
+       vb.memory = "4096"
+    end
+    m13.vm.provision "shell", inline: <<-SHELL
+      sudo cp /vagrant/hosts /etc/hosts
+      sudo cp /vagrant/mongodb-enterprise.repo /etc/yum.repos.d/mongodb-enterprise.repo
+      sudo yum install -y mongodb-enterprise
+      sudo cp /vagrant/mongod-shard0.conf /etc/mongod.conf
+      sudo systemctl start mongod.service
+      mongo /vagrant/init_rs-shard0.js
+    SHELL
+  end
+
+  config.vm.define "m14" do |m14|
+    m14.vm.box = "centos/7"
+    m14.vm.hostname = "m14.mdb.com"
+    m14.vm.network "public_network", bridge: "eno1", ip: "192.168.1.24"
+    m14.vm.provider "virtualbox" do |vb|
+       vb.memory = "4096"
+    end
+    m14.vm.provision "shell", inline: <<-SHELL
+      sudo cp /vagrant/hosts /etc/hosts
+      sudo cp /vagrant/mongodb-enterprise.repo /etc/yum.repos.d/mongodb-enterprise.repo
+      sudo yum install -y mongodb-enterprise
+      sudo cp /vagrant/mongod-shard1.conf /etc/mongod.conf
+      sudo systemctl start mongod.service
+    SHELL
+  end
+
+  config.vm.define "m15" do |m15|
+    m15.vm.box = "centos/7"
+    m15.vm.hostname = "m15.mdb.com"
+    m15.vm.network "public_network", bridge: "eno1", ip: "192.168.1.25"
+    m15.vm.provider "virtualbox" do |vb|
+       vb.memory = "4096"
+    end
+    m15.vm.provision "shell", inline: <<-SHELL
+      sudo cp /vagrant/hosts /etc/hosts
+      sudo cp /vagrant/mongodb-enterprise.repo /etc/yum.repos.d/mongodb-enterprise.repo
+      sudo yum install -y mongodb-enterprise
+      sudo cp /vagrant/mongod-shard1.conf /etc/mongod.conf
+      sudo systemctl start mongod.service
+    SHELL
+  end
+
+
+  config.vm.define "m16" do |m16|
+    m16.vm.box = "centos/7"
+    m16.vm.hostname = "m16.mdb.com"
+    m16.vm.network "public_network", bridge: "eno1", ip: "192.168.1.26"
+    m16.vm.provider "virtualbox" do |vb|
+       vb.memory = "4096"
+    end
+    m16.vm.provision "shell", inline: <<-SHELL
+      sudo cp /vagrant/hosts /etc/hosts
+      sudo cp /vagrant/mongodb-enterprise.repo /etc/yum.repos.d/mongodb-enterprise.repo
+      sudo yum install -y mongodb-enterprise
+      sudo cp /vagrant/mongod-shard1.conf /etc/mongod.conf
+      sudo systemctl start mongod.service
+      mongo /vagrant/init_rs-shard1.js
+    SHELL
+  end
+
+
+  config.vm.define "m17" do |m17|
+    m17.vm.box = "centos/7"
+    m17.vm.hostname = "m17.mdb.com"
+    m17.vm.network "public_network", bridge: "eno1", ip: "192.168.1.27"
+    m17.vm.provider "virtualbox" do |vb|
+       vb.memory = "2048"
+    end
+    m17.vm.provision "shell", inline: <<-SHELL
+      sudo cp /vagrant/hosts /etc/hosts
+      sudo cp /vagrant/mongodb-enterprise.repo /etc/yum.repos.d/mongodb-enterprise.repo
+      sudo yum install -y mongodb-enterprise
+      sudo cp /vagrant/mongod-cfg.conf /etc/mongod.conf
+      sudo systemctl start mongod.service      
+    SHELL
+  end
+
+
+  config.vm.define "m18" do |m18|
+    m18.vm.box = "centos/7"
+    m18.vm.hostname = "m18.mdb.com"
+    m18.vm.network "public_network", bridge: "eno1", ip: "192.168.1.28"
+    m18.vm.provider "virtualbox" do |vb|
+       vb.memory = "2048"
+    end
+    m18.vm.provision "shell", inline: <<-SHELL
+      sudo cp /vagrant/hosts /etc/hosts
+      sudo cp /vagrant/mongodb-enterprise.repo /etc/yum.repos.d/mongodb-enterprise.repo
+      sudo yum install -y mongodb-enterprise
+      sudo cp /vagrant/mongod-cfg.conf /etc/mongod.conf
+      sudo systemctl start mongod.service
+      sudo -u mongod mongos  --port 27000 --bind_ip 0.0.0.0  --configdb cfg_rs/m17.mdb.com:27017,m18.mdb.com:27017,m19.mdb.com:27017 --logpath /var/log/mongodb/mongos.log  --fork
+    SHELL
+  end
+
+
+  config.vm.define "m19" do |m19|
+    m19.vm.box = "centos/7"
+    m19.vm.hostname = "m19.mdb.com"
+    m19.vm.network "public_network", bridge: "eno1", ip: "192.168.1.29"
+    m19.vm.provider "virtualbox" do |vb|
+       vb.memory = "2048"
+    end
+    m19.vm.provision "shell", inline: <<-SHELL
+      sudo cp /vagrant/hosts /etc/hosts
+      sudo cp /vagrant/mongodb-enterprise.repo /etc/yum.repos.d/mongodb-enterprise.repo
+      sudo yum install -y mongodb-enterprise
+      sudo cp /vagrant/mongod-cfg.conf /etc/mongod.conf
+      sudo systemctl start mongod.service
+      mongo /vagrant/init_rs_cfg.js
+      sudo -u mongod mongos  --port 27000 --bind_ip 0.0.0.0  --configdb cfg_rs/m17.mdb.com:27017,m18.mdb.com:27017,m19.mdb.com:27017 --logpath /var/log/mongodb/mongos.log  --fork
+      mongo --port 27000 init_shards.js
+    SHELL
+  end
+
+end
+
+
